@@ -17,6 +17,11 @@ if [ -z "${APIFY_API_TOKEN:-}" ]; then
   exit 1
 fi
 
+# Recorta espacios/saltos de línea perdidos (típico al pegar el token en un
+# secreto de GitHub Actions o en el archivo local) — si no, curl falla con
+# "Malformed input to a URL function".
+APIFY_API_TOKEN="$(printf '%s' "$APIFY_API_TOKEN" | tr -d '[:space:]')"
+
 USERNAME="${1:-mosaico.lab_}"
 POSTS_PER_PROFILE="${2:-30}"
 ACTOR_ID="Gv87i5PtUqPlLcM2W" # instagram-scraper/fast-instagram-post-scraper
@@ -25,7 +30,8 @@ FIELDS="pk,shortcode,date,type,product_type,like_count,comment_count,view_count,
 echo "Consultando @${USERNAME} en Instagram (hasta ${POSTS_PER_PROFILE} posts)..."
 
 RESPONSE="$(curl -sS -X POST \
-  "https://api.apify.com/v2/acts/${ACTOR_ID}/run-sync-get-dataset-items?token=${APIFY_API_TOKEN}&fields=${FIELDS}" \
+  "https://api.apify.com/v2/acts/${ACTOR_ID}/run-sync-get-dataset-items?fields=${FIELDS}" \
+  -H "Authorization: Bearer ${APIFY_API_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"instagramUsernames\":[\"${USERNAME}\"],\"postsPerProfile\":${POSTS_PER_PROFILE}}")"
 
