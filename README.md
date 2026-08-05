@@ -36,6 +36,25 @@ de Apify. Para actualizarlos:
 Cada corrida del script cuesta centavos de dólar en tu cuenta de Apify (paga por
 resultado). 30 posts son unos $0.03.
 
+## Actualización automática + GitHub Pages
+
+El workflow [`.github/workflows/update-dashboard.yml`](.github/workflows/update-dashboard.yml)
+corre `fetch-data.sh` todos los días a las 7:00am (hora Venezuela), commitea
+`data/data.js` si cambió, y publica el dashboard en GitHub Pages. También se puede
+disparar a mano desde la pestaña **Actions** del repo (botón "Run workflow").
+
+Para activarlo la primera vez, dos pasos únicos en la configuración del repo en GitHub:
+
+1. **Agregar el token de Apify como secreto:**
+   Settings → Secrets and variables → Actions → *New repository secret* →
+   nombre `APIFY_API_TOKEN`, valor tu token de Apify. (No lo pegues en el chat conmigo
+   ni en ningún otro lado — solo en ese formulario de GitHub.)
+2. **Activar GitHub Pages con GitHub Actions como fuente:**
+   Settings → Pages → *Build and deployment* → Source: **GitHub Actions**.
+
+Después de eso, el dashboard queda disponible en
+`https://anasmartinh.github.io/mosaico-dashboard/` y se actualiza solo cada día.
+
 ## Notas
 
 - Las miniaturas de los posts vienen de URLs firmadas de Instagram que **expiran**

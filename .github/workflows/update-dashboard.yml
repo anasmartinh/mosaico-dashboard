@@ -1,0 +1,75 @@
+name: Actualizar dashboard y publicar en GitHub Pages
+
+on:
+  schedule:
+    # 11:00 UTC = 7:00 am en Venezuela (UTC-4)
+    - cron: "0 11 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Traer posts de Instagram vía Apify
+        env:
+          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
+        run: bash scripts/fetch-data.sh
+
+      - name: Revisar si data/data.js cambió
+        id: diff
+        run: |
+          if git diff --quiet -- data/data.js; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commitear datos actualizados
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/data.js
+          git commit -m "chore: actualizar datos de Instagram"
+          git push
+
+  deploy:
+    needs: update-data
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout (con los datos más recientes)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Preparar sitio estático
+        run: |
+          mkdir -p _site
+          cp -r index.html css js data _site/
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir artefacto del sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
