@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mosaico · Panel de contenido</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="none" stroke="#7E0015" stroke-width="1.6">
+          <path d="M22 4 L26 16 L22 22 L18 16 Z"/>
+          <path d="M40 22 L28 26 L22 22 L28 18 Z"/>
+          <path d="M22 40 L18 28 L22 22 L26 28 Z"/>
+          <path d="M4 22 L16 18 L22 22 L16 26 Z"/>
+        </g>
+        <circle cx="22" cy="22" r="3" fill="#7E0015"/>
+      </svg>
+      <div class="brand-titles">
+        <h1>Mosaico</h1>
+        <p>Panel de contenido · Instagram</p>
+      </div>
+    </div>
+    <div class="header-meta" id="header-meta"></div>
+  </header>
+
+  <div class="filter-row">
+    <label for="post-limit">Mostrar</label>
+    <select id="post-limit">
+      <option value="10">Últimos 10 posts</option>
+      <option value="20" selected>Últimos 20 posts</option>
+      <option value="all">Todos los posts</option>
+    </select>
+  </div>
+
+  <section class="stat-grid" id="stat-grid" aria-label="Métricas generales"></section>
+
+  <section class="chart-grid">
+    <div class="card chart-card">
+      <h2>Likes por post</h2>
+      <p class="chart-sub">En orden cronológico</p>
+      <div class="chart-holder" id="chart-likes"></div>
+    </div>
+    <div class="card chart-card">
+      <h2>Comentarios por post</h2>
+      <p class="chart-sub">En orden cronológico</p>
+      <div class="chart-holder" id="chart-comments"></div>
+    </div>
+  </section>
+
+  <section class="chart-grid" style="grid-template-columns: 1fr;">
+    <div class="card chart-card">
+      <h2>Top 5 posts con más interacción</h2>
+      <p class="chart-sub">Likes + comentarios</p>
+      <div class="chart-holder" id="chart-top"></div>
+    </div>
+  </section>
+
+  <section class="card table-card">
+    <h2>Todos los posts</h2>
+    <p class="table-sub">Vista de tabla — mismos datos que los gráficos, en detalle</p>
+    <div class="posts-table-scroll">
+      <table class="posts-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Likes</th>
+            <th>Comentarios</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="posts-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    Datos vía Apify (Instagram Scraper) · corre <code>scripts/fetch-data.sh</code> para refrescar
+  </footer>
+
+</div>
+
+<script src="data/data.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
